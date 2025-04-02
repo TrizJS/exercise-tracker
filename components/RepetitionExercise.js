@@ -1,25 +1,35 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Button } from '@rneui/themed';
 
 export default function RepetitionExercise({ route, navigation }) {
   const { exercise, exercises } = route.params;
   const [count, setCount] = useState(0);
-
-  const suggested = exercises.find(ex => ex.id === exercise.suggestedId);
+  const suggested = exercises.find(e => e.id === exercise.suggestedId);
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 24 }}>{exercise.name}</Text>
-      <Text style={{ fontSize: 20, marginVertical: 10 }}>Count: {count}</Text>
-
-      <Button title="Add Rep" onPress={() => setCount(count + 1)} />
-      <Button title="Reset" onPress={() => setCount(0)} style={{ marginTop: 10 }} />
-      <Button title="Go to Suggested" onPress={() => {
-        const screen = suggested.type === 'repetition' ? 'RepetitionExercise' : 'DurationExercise';
-        navigation.push(screen, { exercise: suggested, exercises });
-      }} style={{ marginTop: 10 }} />
-      <Button title="Home" onPress={() => navigation.navigate('Home')} style={{ marginTop: 10 }} />
+    <View style={styles.container}>
+      <Text style={styles.title}>{exercise.name} Repetition</Text>
+      <Button
+        title={`Suggested: ${suggested.name}`}
+        type="solid"
+        buttonStyle={[styles.button, { backgroundColor: '#a8e6cf' }]}
+        onPress={() => {
+          const screen = suggested.type === 'repetition' ? 'RepetitionExercise' : 'DurationExercise';
+          navigation.push(screen, { exercise: suggested, exercises });
+        }}
+      />
+      <Text style={styles.counter}>Rep Count: {count}</Text>
+      <Button title="Add" onPress={() => setCount(count + 1)} buttonStyle={styles.button} />
+      <Button title="Reset" onPress={() => setCount(0)} buttonStyle={styles.button} />
+      <Button title="Home" onPress={() => navigation.navigate('Home')} buttonStyle={styles.button} />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
+  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 10 },
+  counter: { fontSize: 20, marginVertical: 10 },
+  button: { backgroundColor: '#9be7c4', borderRadius: 20, marginVertical: 5, width: 200 }
+});
